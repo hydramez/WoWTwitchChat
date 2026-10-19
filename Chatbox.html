@@ -7,8 +7,21 @@
     <script src="https://cdn.jsdelivr.net/npm/comfy.js@latest/dist/comfy.min.js"></script>
     <title>Twitch chat</title>
     <script>
+      //The channel you want to connect to
       let streamer = "hydramez";
-    </script>
+
+      /*
+        This defines what you want different roles to appear as.
+        available appearances are: usersay, gen, partyleader, party,
+        raidlead, raid, guild, officer, yell, gen, blizz.
+      */
+      let broadcaster = "blizz";
+      let subscriber = "guild";
+      let mod = "officer";
+      let highlight = "yell";
+      let chatter = "gen";
+  
+      </script>
 
   <style>
     html,body {
@@ -71,17 +84,23 @@
       li.guild { 
         color: rgb(64, 255, 64);
       }
-      li.mod {
+      li.officer {
         color: rgb(64, 192, 64);
       }
-      li.broadcaster {
+      li.blizz {
         color: rgb(4, 248, 238);
       }
       li.gen {
         color: rgb(255,192,192);
       }
-      li.raid{
+      li.raidwarn{
         color: rgb(255, 72, 0);
+      }
+      li.raidlead{
+        color: rgb(255, 72, 9);
+      }
+      li.raid{
+        color: rgb(255, 127, 0);
       }
       li.join{
         color: rgb(255, 255, 0);
@@ -89,8 +108,14 @@
       li.usersay{
         color: rgb(255, 255, 255);
       }
-      li.highlighted{
+      li.yell{
         color: rgb(255, 64, 64);
+      }
+      li.party{
+        color: rgb(170, 170, 255);
+      }
+      li.partyleader{
+        color: rgb(118, 200, 255);
       }
       li.common{
         color: rgb(255, 255, 255);
@@ -104,7 +129,7 @@
       .epic{
         color: rgb(163, 53, 238);
       }
-      li.legendary{
+      .legendary{
         color: rgb(255, 128, 0);
       }
       .loot{
@@ -221,27 +246,65 @@
       ComfyJS.onChat = (user, message, flags, self, extra) => {
                 let newMessage = document.createElement("li");
                 let text  = document.createElement("blockquote");
+              /*
+                // change anything within square brackets to legendary colour, currently does not work
+              if( message.includes("[") && message.includes("]")){
+              let itemMessage = message;
+              const messageArray = itemMessage.split("[");
+              let itemMessage2 = messageArray[1];
+              const messageArray2 = itemMessage2.split("]");
+              message = (messageArray[0] + "<span class='legendary'>["+ messageArray2[0] +"]</span>" + messageArray2[1]);
+              */
+              }
 
-                if( flags.subscriber && !flags.mod && !flags.broadcaster){
-                  text.innerText = ("[Guild] [" + user + "]: " + message);
-                  newMessage.classList.add('guild');
+                if( flags.highlighted ){
+                  newMessage.classList.add(highlight);
+                }
+                else if ( flags.broadcaster ){
+                  newMessage.classList.add(broadcaster);
                 }
                 else if( flags.mod ){
-                  text.innerText = ("[Officer] [" + user + "]: " + message);
-                  newMessage.classList.add('mod');
+                  newMessage.classList.add(mod);
                 }
-                else if ( flags.broadcaster && !flags.highlighted ){
-                  text.innerText = ("[" + user + "] whispers: " + message);
-                  newMessage.classList.add('broadcaster');
-                }
-                else if( flags.highlighted ){
-                  text.innerText = ("[" + user + "] yells: " + message);
-                  newMessage.classList.add('highlighted');
+                else if( flags.subscriber ){
+                  newMessage.classList.add(subscriber);
                 }
                 else{
-                  text.innerText = ("[1. General] [" + user + "]: " + message);
-                  newMessage.classList.add('gen');
+                  newMessage.classList.add(chatter);
                 }
+
+                if( newMessage.classList.contains("yell") ){
+                  text.innerHTML = ("[" + user + "] yells: " + message);
+                }
+                else if ( newMessage.classList.contains("blizz") ){
+                 text.innerHTML = ("[" + user + "] whispers: " + message);
+                }
+                else if( newMessage.classList.contains("officer") ){
+                  text.innerHTML = ("[Officer] [" + user + "]: " + message);
+                }
+                else if( newMessage.classList.contains("guild") ){
+                  text.innerHTML = ("[Guild] [" + user + "]: " + message);
+                }
+                else if( newMessage.classList.contains("partyleader") ){
+                  text.innerHTML = ("[Party Leader] [" + user + "]: " + message);
+                }
+                else if( newMessage.classList.contains("party") ){
+                  text.innerHTML = ("[Party] [" + user + "]: " + message);
+                }
+                else if( newMessage.classList.contains("raidlead") ){
+                  text.innerHTML = ("[Raid Leader] [" + user + "]: " + message);
+                }
+                else if( newMessage.classList.contains("raid") ){
+                  text.innerHTML = ("[Raid] [" + user + "]: " + message);
+                }
+                else if ( newMessage.classList.contains("usersay") ){
+                 text.innerHTML = ("[" + user + "] says: " + message);
+                }
+                else{
+                  text.innerHTML = ("[1. General] [" + user + "]: " + message);
+                }
+
+        
 
                 newMessage.append(text);
                 newMessage.id = extra.id;
@@ -252,7 +315,7 @@
         let newMessage = document.createElement("li");
         let text = document.createElement("blockquote");
         text.innerText = ( "[Raid Warning] " + user + " is raiding with " + viewers + "!");
-        newMessage.classList.add('raid');
+        newMessage.classList.add('raidwarn');
         newMessage.append(text);
         chat.append(newMessage);
       }
@@ -276,8 +339,9 @@
         newMessage.classList.add('join');
         newMessage.append(text);
         chat.append(newMessage);
+
         secondTex.innerText = ( "[" + user + "]: " + message );
-        secondMes.classList.add('guild');
+        secondMes.classList.add(subscriber);
         secondMes.append(secondTex);
         chat.append(secondMes);
       }
@@ -343,10 +407,10 @@
           ComfyJS.onRaid("testuser", "50", null);
         }
         else if( flags.broadcaster && command === "testsub" ) {
-          ComfyJS.onSub("testuser", "i subbed!", null, null);
+          ComfyJS.onSub("testuser", "I subbed!", null, null);
         }
         else if( flags.broadcaster && command === "testresub" ) {
-          ComfyJS.onResub("testuser", "i resubbed!", null, null, null, null);
+          ComfyJS.onResub("testuser", "I resubbed!", null, null, null, null);
         }
         else if( flags.broadcaster && command === "testgiftsub" ) {
           ComfyJS.onSubGift("testsenduser", "5", "testreceiveuser", null, null, null);
