@@ -1,0 +1,370 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/comfy.js@latest/dist/comfy.min.js"></script>
+    <title>Twitch chat</title>
+    <script>
+      let streamer = "hydramez";
+    </script>
+
+  <style>
+    html,body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial Narrow;
+      color: rgb(31, 104, 132);
+    }
+
+    blockquote {
+      margin: 0px;
+    }
+
+    .wow-btn {
+    width: 30px;
+    height: 30px;
+    background: rgba(14, 14, 12, 1);
+    border: 1px solid;
+    border-color: #9c9e9c #84827b #4a4942 #524d4a;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-bottom: 20px;
+    margin-right: 5px;
+    box-shadow: inset 0 1px 0 rgba(0, 0, 0, 1), inset 0 -1px 0 rgba(0, 0, 0, 1), inset 1px 0 0 rgba(0, 0, 0, 1), inset -1px 0 0 rgba(0, 0, 0, 1), inset 0 2px 0 rgba(57, 55, 57, 0.80), inset 0 3px 0 rgba(66, 64, 66, 0.67), inset 2px 0 0 rgba(0, 0, 0, 0.60), inset 0 -2px 0 rgba(0, 0, 0, 0.60), inset -2px 0 0 rgba(48, 47, 46, 0.80), 0 0 0 1px rgba(0, 0, 0, 0.53), 0 0 0 2px rgba(0, 0, 0, 0.20);
+    }
+
+    .container {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
+      gap: 1px;
+      padding: 5px;
+    }
+
+    #chat {
+      width: 800px;
+      height: 350px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column-reverse;
+      background-color: rgba(0, 0, 0, 1);
+      margin-bottom: 10px;
+      border-radius: 5px;
+      outline: solid rgb(144, 144, 144, 1);
+    }
+
+    #chat ul {
+      list-style-type: none;
+      list-style-position: outside;
+      display: flex;
+      flex-direction: column;
+      margin: 5;
+      padding: 5;
+      gap: 4px;
+
+      /* Colours for various user flags */
+      li.guild { 
+        color: rgb(64, 255, 64);
+      }
+      li.mod {
+        color: rgb(64, 192, 64);
+      }
+      li.broadcaster {
+        color: rgb(4, 248, 238);
+      }
+      li.gen {
+        color: rgb(255,192,192);
+      }
+      li.raid{
+        color: rgb(255, 72, 0);
+      }
+      li.join{
+        color: rgb(255, 255, 0);
+      }
+      li.usersay{
+        color: rgb(255, 255, 255);
+      }
+      li.highlighted{
+        color: rgb(255, 64, 64);
+      }
+      li.common{
+        color: rgb(255, 255, 255);
+      }
+      li.uncommon{
+        color: rgb(30, 255, 0);
+      }
+      li.rare{
+        color: rgb(0, 112, 221);
+      }
+      .epic{
+        color: rgb(163, 53, 238);
+      }
+      li.legendary{
+        color: rgb(255, 128, 0);
+      }
+      .loot{
+        color: rgb(0, 170, 0);
+      }
+    }
+
+    #chat::-webkit-scrollbar {
+      display: none;
+    }
+    #chat blockquote {
+      font-size: 1.5rem;
+    }
+
+  </style>
+</head>
+
+<body>
+  
+<div class="container">
+  <div id="side-btns">
+    <!-- Speaker button -->
+    <div class="wow-btn" title="Sound">
+      <svg viewBox="-2 0.5 29 29" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="g-snd" gradientUnits="userSpaceOnUse" x1="0" y1="6" x2="0" y2="25"><stop offset="0" stop-color="#fff0a0"></stop>
+          <stop offset="0.32" stop-color="#ffe76b"></stop>
+          <stop offset="0.48" stop-color="#eec21e"></stop>
+          <stop offset="0.6" stop-color="#ce9608"></stop>
+          <stop offset="1" stop-color="#8f7005"></stop>
+        </linearGradient>
+      </defs>
+        <rect x="2" y="19" width="3" height="2" fill="rgba(0,0,0,0.7)"></rect>
+        <polygon points="2,12 5.5,12 10.5,6 12,6 12,25 10.5,25 5.5,19 2,19" fill="url(#g-snd)"></polygon>
+        <rect x="12" y="8" width="1" height="17" fill="rgba(0,0,0,0.7)"></rect>
+        <rect x="18" y="14" width="1" height="5" fill="rgba(0,0,0,0.75)"></rect>
+        <rect x="16.5" y="19" width="2" height="1.5" fill="rgba(0,0,0,0.65)"></rect>
+        <rect x="16" y="12" width="2" height="7" fill="#f7db00"></rect>
+        <path d="M17.5 6.5 A10.9 10.9 0 0 1 17.5 26.5" fill="none" stroke="rgba(0,0,0,0.7)" stroke-width="2"></path>
+        <path d="M16.5 5.5 A10.9 10.9 0 0 1 16.5 25.5" fill="none" stroke="#f7db00" stroke-width="2.2"></path>
+      </svg>
+    </div>
+    <!-- Chat button -->
+    <div class="wow-btn" title="Chat">
+      <svg viewBox="0 0 14 13" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="g-chat" x1="0" y1="1" x2="1" y2="0">
+          <stop offset="0" stop-color="#bda210"></stop>
+          <stop offset="0.5" stop-color="#d9c210"></stop>
+          <stop offset="1" stop-color="#efdb10"></stop>
+        </linearGradient>
+      </defs>
+        <path d="M7 0.5 C10.8 0.5 13.5 2.3 13.5 4.6 C13.5 6.7 11.9 8.3 10.4 8.6 L11.7 12.9 L7.2 8.7 C3.4 8.5 0.5 6.7 0.5 4.6 C0.5 2.3 3.2 0.5 7 0.5 Z" fill="url(#g-chat)" stroke="#4d4212" stroke-width="0.7" stroke-linejoin="round"></path>
+      </svg>
+    </div>
+    <!-- Scroll up button -->
+    <div class="wow-btn scroll" title="Scroll Up">
+      <svg viewBox="0 0 13 9" xmlns="http://www.w3.org/2000/svg">
+
+        <defs><linearGradient id="g-up" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#e7c721"></stop>
+          <stop offset="0.67" stop-color="#bd9e10"></stop>
+          <stop offset="1" stop-color="#bd9e10"></stop>
+        </linearGradient>
+      </defs>
+        <polygon points="6.5,0 13,6 9,6 9,9 4,9 4,6 0,6" fill="url(#g-up)"></polygon>
+        <polyline points="0.6,5.6 6.5,0.4 12.4,5.6" fill="none" stroke="#ecd02a" stroke-width="0.7" stroke-linejoin="round"></polyline>
+        <rect x="4" y="8.3" width="5" height="0.7" fill="#967e10"></rect>
+      </svg>
+    </div>
+    <!-- Scroll down button -->
+    <div class="wow-btn scroll" title="Scroll Down">
+      <svg viewBox="0 0 13 10" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="g-dn" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#b59610"></stop>
+          <stop offset="1" stop-color="#8f7a08"></stop>
+        </linearGradient>
+      </defs>
+        <rect x="4" y="0" width="5" height="3.2" fill="#b59610"></rect>
+        <rect x="4" y="0" width="5" height="0.8" fill="#e7c729"></rect>
+        <rect x="8.2" y="0" width="0.8" height="3.2" fill="#deba18"></rect>
+        <polygon points="0,3 13,3 6.5,10" fill="url(#g-dn)"></polygon>
+        <rect x="8.5" y="3" width="4.5" height="0.8" fill="#deba18"></rect>
+      </svg>
+    </div>
+    <!-- Scroll to bottom button -->
+    <div class="wow-btn scroll" title="Scroll to Bottom">
+      <svg viewBox="0 0 13 12" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="g-end" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#a58a08"></stop>
+            <stop offset="1" stop-color="#8a7408"></stop>
+          </linearGradient>
+        </defs>
+        <rect x="4" y="0" width="5" height="3.2" fill="#a58a08"></rect>
+        <rect x="4" y="0" width="5" height="0.8" fill="#e7c729"></rect>
+        <rect x="8.2" y="0" width="0.8" height="3.2" fill="#d6b418"></rect>
+        <polygon points="0,3 13,3 6.5,10" fill="url(#g-end)"></polygon>
+        <rect x="8.5" y="3" width="4.5" height="0.8" fill="#d6b418"></rect>
+        <rect x="0" y="11" width="7" height="1" fill="#9c8208"></rect>
+        <rect x="7" y="11" width="6" height="1" fill="#bd9e10"></rect>
+      </svg>
+    </div>
+  </div>
+
+    <div id="chat">
+        <ul>
+        </ul>
+    </div>
+</div>
+    <script>
+      (function() {
+        let chat = document.querySelector("#chat>ul");
+        console.log(chat);
+
+      ComfyJS.onChat = (user, message, flags, self, extra) => {
+                let newMessage = document.createElement("li");
+                let text  = document.createElement("blockquote");
+
+                if( flags.subscriber && !flags.mod && !flags.broadcaster){
+                  text.innerText = ("[Guild] [" + user + "]: " + message);
+                  newMessage.classList.add('guild');
+                }
+                else if( flags.mod ){
+                  text.innerText = ("[Officer] [" + user + "]: " + message);
+                  newMessage.classList.add('mod');
+                }
+                else if ( flags.broadcaster && !flags.highlighted ){
+                  text.innerText = ("[" + user + "] whispers: " + message);
+                  newMessage.classList.add('broadcaster');
+                }
+                else if( flags.highlighted ){
+                  text.innerText = ("[" + user + "] yells: " + message);
+                  newMessage.classList.add('highlighted');
+                }
+                else{
+                  text.innerText = ("[1. General] [" + user + "]: " + message);
+                  newMessage.classList.add('gen');
+                }
+
+                newMessage.append(text);
+                newMessage.id = extra.id;
+                chat.append(newMessage);
+      }
+
+      ComfyJS.onRaid = (user, viewers, extra) => {
+        let newMessage = document.createElement("li");
+        let text = document.createElement("blockquote");
+        text.innerText = ( "[Raid Warning] " + user + " is raiding with " + viewers + "!");
+        newMessage.classList.add('raid');
+        newMessage.append(text);
+        chat.append(newMessage);
+      }
+
+      ComfyJS.onSub = ( user, message, subTierInfo, extra) => {
+        let newMessage = document.createElement("li");
+        let text = document.createElement("blockquote");
+        text.innerText = ( user + " has joined the guild.");
+        newMessage.classList.add('join');
+        newMessage.append(text);
+        chat.append(newMessage);
+      }
+
+      ComfyJS.onResub = ( user, message, streamMonths, cumulativeMonths, subTierInfo, extra) => {
+        let newMessage = document.createElement("li");
+        let text = document.createElement("blockquote");
+        let secondMes = document.createElement("li");
+        let secondTex = document.createElement("blockquote");
+
+        text.innerText = ( user + " has come online.");
+        newMessage.classList.add('join');
+        newMessage.append(text);
+        chat.append(newMessage);
+        secondTex.innerText = ( "[" + user + "]: " + message );
+        secondMes.classList.add('guild');
+        secondMes.append(secondTex);
+        chat.append(secondMes);
+      }
+
+      ComfyJS.onSubGift = ( gifterUser, streakMonths, recipientUser, senderCount, subTierInfo, extra ) => {
+        let newMessage = document.createElement("li");
+        let text = document.createElement("blockquote");
+        text.innerHTML = ( recipientUser + " receives loot: " + "<span class='epic'>[Gifted Sub]</span>");
+        newMessage.classList.add('loot');
+        newMessage.append(text);
+        chat.append(newMessage);
+      }
+
+      ComfyJS.onCheer = ( user, message, bits, flags, extra) => {
+        let newMessage = document.createElement("li");
+        let text = document.createElement("blockquote");
+        let secondMes = document.createElement("li");
+        let secondTex = document.createElement("blockquote");
+        
+
+        if (bits < 50){
+        text.innerHTML = ( "<span class='loot'>" + streamer + " receives loot: </span>" + "["+ bits +" bits]");
+        newMessage.classList.add('common');
+        }
+        else if (bits >= 50 && bits < 250){
+        text.innerHTML = ("<span class='loot'>" + streamer + " receives loot: </span>" + "["+ bits +" bits]");
+        newMessage.classList.add('uncommon');
+        }
+        else if (bits >= 250 && bits < 500){
+        text.innerHTML = ("<span class='loot'>" + streamer + " receives loot: </span>" + "["+ bits +" bits]");
+        newMessage.classList.add('rare');
+        }
+        else if (bits >= 500 && bits < 1000){
+        text.innerHTML = ("<span class='loot'>" + streamer + " receives loot: </span>" + "["+ bits +" bits]");
+        newMessage.classList.add('epic');
+        }
+        else if (bits >= 1000){
+        text.innerHTML = ("<span class='loot'>" + streamer + " receives loot: </span>" + "["+ bits +" bits]");
+        newMessage.classList.add('legendary');
+        }
+
+        secondTex.innerText = ("[" + user + "] says: " + message);
+        secondMes.classList.add('userSay');
+        secondMes.append(secondTex);
+        chat.append(secondMes);
+
+        newMessage.append(text);
+        chat.append(newMessage);
+
+      }
+
+    ComfyJS.onMessageDeleted = (id, extra) => {
+     let delMes = document.getElementById(id);
+     delMes.remove();
+    }
+
+
+    //commands for testing. 
+    //Set to only work if the broadcaster sends the command 
+      
+      ComfyJS.onCommand = ( user, command, message, flags, extra ) => {
+        if( flags.broadcaster && command === "testraid" ) {
+          ComfyJS.onRaid("testuser", "50", null);
+        }
+        else if( flags.broadcaster && command === "testsub" ) {
+          ComfyJS.onSub("testuser", "i subbed!", null, null);
+        }
+        else if( flags.broadcaster && command === "testresub" ) {
+          ComfyJS.onResub("testuser", "i resubbed!", null, null, null, null);
+        }
+        else if( flags.broadcaster && command === "testgiftsub" ) {
+          ComfyJS.onSubGift("testsenduser", "5", "testreceiveuser", null, null, null);
+        }
+        else if( flags.broadcaster && command === "testbits" ) {
+          ComfyJS.onCheer("testsenduser", "Message", "25", null, null, null);
+          ComfyJS.onCheer("testsenduser", "Message", "50", null, null, null);
+          ComfyJS.onCheer("testsenduser", "Message", "250", null, null, null);
+          ComfyJS.onCheer("testsenduser", "Message", "500", null, null, null);
+          ComfyJS.onCheer("testsenduser", "Message", "1000", null, null, null);
+        }
+
+      }
+      ComfyJS.Init(streamer);
+
+      })();
+
+    </script>
+</body>
+
+</html>
