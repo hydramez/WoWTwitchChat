@@ -246,16 +246,17 @@
       ComfyJS.onChat = (user, message, flags, self, extra) => {
                 let newMessage = document.createElement("li");
                 let text  = document.createElement("blockquote");
+              
+              //change anything within square brackets to legendary colour, currently does not work
               /*
-                // change anything within square brackets to legendary colour, currently does not work
               if( message.includes("[") && message.includes("]")){
               let itemMessage = message;
               const messageArray = itemMessage.split("[");
               let itemMessage2 = messageArray[1];
               const messageArray2 = itemMessage2.split("]");
               message = (messageArray[0] + "<span class='legendary'>["+ messageArray2[0] +"]</span>" + messageArray2[1]);
-              */
               }
+              */
 
                 if( flags.highlighted ){
                   newMessage.classList.add(highlight);
@@ -422,7 +423,6 @@
           ComfyJS.onCheer("testsenduser", "Message", "500", null, null, null);
           ComfyJS.onCheer("testsenduser", "Message", "1000", null, null, null);
         }
-
       }
       ComfyJS.Init(streamer);
 
