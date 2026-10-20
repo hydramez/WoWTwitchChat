@@ -21,6 +21,7 @@ Currently you can change colour/formatting for:
 
   <img width="847" height="359" alt="ExampleChatBox" src="https://github.com/user-attachments/assets/a83930fb-a7ca-4677-9623-314d122a8eae" />
   <img width="847" height="362" alt="ExampleChatBox2" src="https://github.com/user-attachments/assets/c81671f0-e810-46cb-8b58-9d175a458db6" />
-  
+  <img width="858" height="366" alt="ExampleChatBox3" src="https://github.com/user-attachments/assets/177dde7e-9e00-4824-9cce-a80f7f7ce1f7" />
+
   Size should be 800 x 360
 </p>
