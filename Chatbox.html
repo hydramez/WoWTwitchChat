@@ -412,6 +412,9 @@
           ComfyJS.onCheer("testsenduser", "Message", "500", null, null, null);
           ComfyJS.onCheer("testsenduser", "Message", "1000", null, null, null);
         }
+        else if( flags.broadcaster && command === "roletest" ) {
+          broadcaster = message;
+        }
       }
       ComfyJS.Init(streamer);
 
