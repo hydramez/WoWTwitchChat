@@ -8,7 +8,7 @@
     <title>Twitch chat</title>
     <script>
       //The channel you want to connect to
-      let streamer = "hydramez";
+      let streamer = "Hydramez";
 
       /*
         This defines what you want different roles to appear as.
@@ -91,7 +91,7 @@
         color: rgb(4, 248, 238);
       }
       li.gen {
-        color: rgb(255,192,192);
+        color: rgb(255, 192, 192);
       }
       li.raidwarn{
         color: rgb(255, 72, 0);
@@ -242,22 +242,27 @@
       (function() {
         let chat = document.querySelector("#chat>ul");
         console.log(chat);
+        let newMessage = document.createElement("li");
+        let text  = document.createElement("blockquote");
+        text.innerText = ( streamer + " has come online.");
+        newMessage.classList.add('join');
+        newMessage.append(text);
+        chat.append(newMessage);
+
+        function legitem (message) 
+      {
+              const result = message.replace(/\[([^\]]+)\]/g, '<span class="legendary">[$1]</span>');
+              return result;
+      }
 
       ComfyJS.onChat = (user, message, flags, self, extra) => {
                 let newMessage = document.createElement("li");
                 let text  = document.createElement("blockquote");
-              
-              //change anything within square brackets to legendary colour, currently does not work
-              /*
-              if( message.includes("[") && message.includes("]")){
-              let itemMessage = message;
-              const messageArray = itemMessage.split("[");
-              let itemMessage2 = messageArray[1];
-              const messageArray2 = itemMessage2.split("]");
-              message = (messageArray[0] + "<span class='legendary'>["+ messageArray2[0] +"]</span>" + messageArray2[1]);
-              }
-              */
 
+              if( message.includes("[") && message.includes("]")){
+                message = legitem(message);
+              }
+              
                 if( flags.highlighted ){
                   newMessage.classList.add(highlight);
                 }
