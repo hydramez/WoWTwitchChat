@@ -242,6 +242,10 @@
       ComfyJS.onChat = (user, message, flags, self, extra) => {
                 let newMessage = document.createElement("li");
                 let text  = document.createElement("blockquote");
+              
+              // Removes anything between < and > to avoid users sending HTML via message
+              message = message.replace(/<[^>]*>/g, ''); 
+           
 
               if( message.includes("[") && message.includes("]")){
                 message = legitem(message);
