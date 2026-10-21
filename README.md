@@ -23,6 +23,7 @@ Currently you can change colour/formatting for:
   <img width="847" height="359" alt="ExampleChatBox" src="https://github.com/user-attachments/assets/a83930fb-a7ca-4677-9623-314d122a8eae" />
   <img width="847" height="362" alt="ExampleChatBox2" src="https://github.com/user-attachments/assets/c81671f0-e810-46cb-8b58-9d175a458db6" />
   <img width="858" height="366" alt="ExampleChatBox3" src="https://github.com/user-attachments/assets/177dde7e-9e00-4824-9cce-a80f7f7ce1f7" />
-
- 
 </p>
+
+Like the overlay?
+<a href='https://ko-fi.com/U7U33TAG9' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi5.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
