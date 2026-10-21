@@ -22,4 +22,3 @@ var legendaryBits = 1000
         50 shows as common.
         Between 50 and 250 shows as uncommon, etc.
     */
-   

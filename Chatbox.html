@@ -294,7 +294,7 @@
                  text.innerHTML = ( user + " says: " + message);
                 }
                 else{
-                  text.innerHTML = ("[1. General] [" + user + "]: " + message);
+                  text.innerHTML = ("[1. General] " + user + ": " + message);
                 }
 
         
@@ -389,7 +389,7 @@
         user = formatName(user, extra.userColor);
         message = stripHTML(message);
         secondTex.innerHTML = ( user + " says: " + message);
-        secondMes.classList.add('userSay');
+        secondMes.classList.add('usersay');
         secondMes.append(secondTex);
         chat.append(secondMes);
 
