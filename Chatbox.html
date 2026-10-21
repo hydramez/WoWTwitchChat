@@ -101,13 +101,13 @@
       li.partyleader{
         color: rgb(118, 200, 255);
       }
-      li.common{
+      .common{
         color: rgb(255, 255, 255);
       }
-      li.uncommon{
+      .uncommon{
         color: rgb(30, 255, 0);
       }
-      li.rare{
+      .rare{
         color: rgb(0, 112, 221);
       }
       .epic{
@@ -233,24 +233,17 @@
         newMessage.append(text);
         chat.append(newMessage);
 
-        function legitem (message) 
-      {
-              const result = message.replace(/\[([^\]]+)\]/g, '<span class="legendary">[$1]</span>');
-              return result;
-      }
-
       ComfyJS.onChat = (user, message, flags, self, extra) => {
-                let newMessage = document.createElement("li");
-                let text  = document.createElement("blockquote");
+              let newMessage = document.createElement("li");
+              let text  = document.createElement("blockquote");
               
-              // Removes anything between < and > to avoid users sending HTML via message
-              message = message.replace(/<[^>]*>/g, ''); 
-           
-
+              message = stripHTML(message);
+              user = formatName(user, extra.userColor);
               if( message.includes("[") && message.includes("]")){
-                message = legitem(message);
+                message = itemQual(message);
               }
-              
+
+                
                 if( flags.highlighted ){
                   newMessage.classList.add(highlight);
                 }
@@ -260,6 +253,12 @@
                 else if( flags.mod ){
                   newMessage.classList.add(mod);
                 }
+                else if( flags.vip ){
+                  newMessage.classList.add(vip);
+                }
+                else if( flags.founder ){
+                  newMessage.classList.add(founder);
+                }
                 else if( flags.subscriber ){
                   newMessage.classList.add(subscriber);
                 }
@@ -268,31 +267,31 @@
                 }
 
                 if( newMessage.classList.contains("yell") ){
-                  text.innerHTML = ("[" + user + "] yells: " + message);
+                  text.innerHTML = ( user + " yells: " + message);
                 }
                 else if ( newMessage.classList.contains("blizz") ){
-                 text.innerHTML = ("[" + user + "] whispers: " + message);
+                 text.innerHTML = ( user + " whispers: " + message);
                 }
                 else if( newMessage.classList.contains("officer") ){
-                  text.innerHTML = ("[Officer] [" + user + "]: " + message);
+                  text.innerHTML = ( "[Officer] " + user + ": " + message);
                 }
                 else if( newMessage.classList.contains("guild") ){
-                  text.innerHTML = ("[Guild] [" + user + "]: " + message);
+                  text.innerHTML = ( "[Guild] " + user + ": " + message);
                 }
                 else if( newMessage.classList.contains("partyleader") ){
-                  text.innerHTML = ("[Party Leader] [" + user + "]: " + message);
+                  text.innerHTML = ( "[Party Leader] " + user + ": " + message);
                 }
                 else if( newMessage.classList.contains("party") ){
-                  text.innerHTML = ("[Party] [" + user + "]: " + message);
+                  text.innerHTML = ( "[Party] " + user + ": " + message);
                 }
                 else if( newMessage.classList.contains("raidlead") ){
-                  text.innerHTML = ("[Raid Leader] [" + user + "]: " + message);
+                  text.innerHTML = ( "[Raid Leader] " + user + ": " + message);
                 }
                 else if( newMessage.classList.contains("raid") ){
-                  text.innerHTML = ("[Raid] [" + user + "]: " + message);
+                  text.innerHTML = ( "[Raid] " + user + ": " + message);
                 }
                 else if ( newMessage.classList.contains("usersay") ){
-                 text.innerHTML = ("[" + user + "] says: " + message);
+                 text.innerHTML = ( user + " says: " + message);
                 }
                 else{
                   text.innerHTML = ("[1. General] [" + user + "]: " + message);
@@ -317,10 +316,19 @@
       ComfyJS.onSub = ( user, message, subTierInfo, extra) => {
         let newMessage = document.createElement("li");
         let text = document.createElement("blockquote");
+        let secondMes = document.createElement("li");
+        let secondTex = document.createElement("blockquote");
         text.innerText = ( user + " has joined the guild.");
         newMessage.classList.add('join');
         newMessage.append(text);
         chat.append(newMessage);
+        message = stripHTML(message); 
+        user = formatName(user, extra.userColor);
+
+        secondTex.innerHTML = (  user + ": " + message );
+        secondMes.classList.add(subscriber);
+        secondMes.append(secondTex);
+        chat.append(secondMes);
       }
 
       ComfyJS.onResub = ( user, message, streamMonths, cumulativeMonths, subTierInfo, extra) => {
@@ -333,8 +341,10 @@
         newMessage.classList.add('join');
         newMessage.append(text);
         chat.append(newMessage);
+        message = stripHTML(message);
+        user = formatName(user, extra.userColor);
 
-        secondTex.innerText = ( "[" + user + "]: " + message );
+        secondTex.innerHTML = ( user + ": " + message );
         secondMes.classList.add(subscriber);
         secondMes.append(secondTex);
         chat.append(secondMes);
@@ -356,28 +366,29 @@
         let secondTex = document.createElement("blockquote");
         
 
-        if (bits < 50){
-        text.innerHTML = ( "<span class='loot'>" + streamer + " receives loot: </span>" + "["+ bits +" bits]");
+        if (bits < commonBits){
+        text.innerHTML = ( "<span class='loot'>" + streamer + " receives loot: </span>" + "[A handful of "+ bits +" bits]");
         newMessage.classList.add('common');
         }
-        else if (bits >= 50 && bits < 250){
-        text.innerHTML = ("<span class='loot'>" + streamer + " receives loot: </span>" + "["+ bits +" bits]");
+        else if (bits >= commonBits && bits < uncommonBits){
+        text.innerHTML = ("<span class='loot'>" + streamer + " receives loot: </span>" + "[A pouch of "+ bits +" bits]");
         newMessage.classList.add('uncommon');
         }
-        else if (bits >= 250 && bits < 500){
-        text.innerHTML = ("<span class='loot'>" + streamer + " receives loot: </span>" + "["+ bits +" bits]");
+        else if (bits >= uncommonBits && bits < rareBits){
+        text.innerHTML = ("<span class='loot'>" + streamer + " receives loot: </span>" + "[A bag of "+ bits +" bits]");
         newMessage.classList.add('rare');
         }
-        else if (bits >= 500 && bits < 1000){
-        text.innerHTML = ("<span class='loot'>" + streamer + " receives loot: </span>" + "["+ bits +" bits]");
+        else if (bits >= rareBits && bits < legendaryBits){
+        text.innerHTML = ("<span class='loot'>" + streamer + " receives loot: </span>" + "[A crate of "+ bits +" bits]");
         newMessage.classList.add('epic');
         }
-        else if (bits >= 1000){
-        text.innerHTML = ("<span class='loot'>" + streamer + " receives loot: </span>" + "["+ bits +" bits]");
+        else if (bits >= legendaryBits){
+        text.innerHTML = ("<span class='loot'>" + streamer + " receives loot: </span>" + "[A cache of "+ bits +" bits]");
         newMessage.classList.add('legendary');
         }
-
-        secondTex.innerText = ("[" + user + "] says: " + message);
+        user = formatName(user, extra.userColor);
+        message = stripHTML(message);
+        secondTex.innerHTML = ( user + " says: " + message);
         secondMes.classList.add('userSay');
         secondMes.append(secondTex);
         chat.append(secondMes);
@@ -401,24 +412,65 @@
           ComfyJS.onRaid("testuser", "50", null);
         }
         else if( flags.broadcaster && command === "testsub" ) {
-          ComfyJS.onSub("testuser", "I subbed!", null, null);
+          ComfyJS.onSub("testuser", "I subbed!", null, extra);
         }
         else if( flags.broadcaster && command === "testresub" ) {
-          ComfyJS.onResub("testuser", "I resubbed!", null, null, null, null);
+          ComfyJS.onResub("testuser", "I resubbed!", null, null, null, extra);
         }
         else if( flags.broadcaster && command === "testgiftsub" ) {
-          ComfyJS.onSubGift("testsenduser", "5", "testreceiveuser", null, null, null);
+          ComfyJS.onSubGift("testsenduser", "5", "testreceiveuser", null, null, extra);
         }
         else if( flags.broadcaster && command === "testbits" ) {
-          ComfyJS.onCheer("testsenduser", "Message", "25", null, null, null);
-          ComfyJS.onCheer("testsenduser", "Message", "50", null, null, null);
-          ComfyJS.onCheer("testsenduser", "Message", "250", null, null, null);
-          ComfyJS.onCheer("testsenduser", "Message", "500", null, null, null);
-          ComfyJS.onCheer("testsenduser", "Message", "1000", null, null, null);
+          ComfyJS.onCheer("testsenduser", "Message", "25", null, extra);
+          ComfyJS.onCheer("testsenduser", "Message", "50", null, extra);
+          ComfyJS.onCheer("testsenduser", "Message", "250", null, extra);
+          ComfyJS.onCheer("testsenduser", "Message", "500", null, extra);
+          ComfyJS.onCheer("testsenduser", "Message", "1000", null, extra);
         }
         else if( flags.broadcaster && command === "roletest" ) {
           broadcaster = message;
         }
+      }
+
+      function itemQual (message) 
+      {
+          /*
+          Randomly assigns an item quality to text within square brackets, applying the corresponding colour.
+          common items have the highest chance, legendary has the least.
+          */
+              let rand = Math.floor(Math.random() * 100) + 1;
+              console.log(rand);
+              if(rand < 50)
+              {
+              result = message.replace(/\[([^\]]+)\]/g, '<span class="common">[$1]</span>');
+              }
+              else if(rand >= 50 && rand < 75)
+              {
+              result = message.replace(/\[([^\]]+)\]/g, '<span class="uncommon">[$1]</span>');
+              }
+              else if(rand >= 75 && rand < 90)
+              {
+              result = message.replace(/\[([^\]]+)\]/g, '<span class="rare">[$1]</span>');
+              }
+              else if(rand >= 90 && rand < 99)
+              {
+              result = message.replace(/\[([^\]]+)\]/g, '<span class="epic">[$1]</span>');
+              }
+              else if(rand >= 99)
+              {
+              result = message.replace(/\[([^\]]+)\]/g, '<span class="legendary">[$1]</span>');
+              }
+
+              return result;
+      }
+      function formatName(user, usercolour)
+      {
+        return ("[<span style=color:" + usercolour + ">" + user +"</span>]");
+      }
+      function stripHTML(message)
+      {
+        // Removes anything between < and > to avoid users sending HTML via message
+        return message.replace(/<[^>]*>/g, '');
       }
       ComfyJS.Init(streamer);
 
