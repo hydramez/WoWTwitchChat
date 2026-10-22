@@ -437,31 +437,35 @@
           /*
           Randomly assigns an item quality to text within square brackets, applying the corresponding colour.
           common items have the highest chance, legendary has the least.
+          Select names will always return legendary
           */
               let rand = Math.floor(Math.random() * 100) + 1;
-              console.log(rand);
+              if(message.toLowerCase().includes("thunderfury") || message.toLowerCase().includes("sulfuras") || message.toLowerCase().includes("atiesh"))
+              {
+                return message.replace(/\[([^\]]+)\]/g, '<span class="legendary">[$1]</span>');
+              }
+
               if(rand < 50)
               {
-              result = message.replace(/\[([^\]]+)\]/g, '<span class="common">[$1]</span>');
+                return message.replace(/\[([^\]]+)\]/g, '<span class="common">[$1]</span>');
               }
               else if(rand >= 50 && rand < 75)
               {
-              result = message.replace(/\[([^\]]+)\]/g, '<span class="uncommon">[$1]</span>');
+                return message.replace(/\[([^\]]+)\]/g, '<span class="uncommon">[$1]</span>');
               }
               else if(rand >= 75 && rand < 90)
               {
-              result = message.replace(/\[([^\]]+)\]/g, '<span class="rare">[$1]</span>');
+                return message.replace(/\[([^\]]+)\]/g, '<span class="rare">[$1]</span>');
               }
               else if(rand >= 90 && rand < 99)
               {
-              result = message.replace(/\[([^\]]+)\]/g, '<span class="epic">[$1]</span>');
+                return message.replace(/\[([^\]]+)\]/g, '<span class="epic">[$1]</span>');
               }
               else if(rand >= 99)
               {
-              result = message.replace(/\[([^\]]+)\]/g, '<span class="legendary">[$1]</span>');
+                return message.replace(/\[([^\]]+)\]/g, '<span class="legendary">[$1]</span>');
               }
 
-              return result;
       }
       function formatName(user, usercolour)
       {
